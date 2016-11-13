@@ -1,2 +1,2 @@
 # WebPageExtractor
-the fist big assignment(DA ZUO YE) of Data Structure, 2016
+the fist term project (DA ZUO YE) of Data Structure, 2016
