@@ -25,6 +25,7 @@ private:
 	int Size;//栈的长度
 
 public:
+	T* Current;//栈顶元素
 	//栈的构造函数，用于初始化数据域
 	Stack(int length);
 	//重载，默认长度为0
@@ -42,6 +43,7 @@ public:
 	Status push(T data);
 	//退栈
 	Status pop(T& data);
+	Status pop();
 	//获取栈顶元素
 	Status top(T& data);
 	//判断栈是否为空
@@ -92,6 +94,7 @@ Status Stack<T>::push(T data)
 
 	(*Top) = data;
 	Top++;
+	Current = Top - 1;
 	return OK;
 }
 
@@ -104,6 +107,19 @@ Status Stack<T>::pop(T& data)
 
 	Top--;
 	data = (*Top);
+	Current = Top - 1;
+	return OK;
+}
+
+template<typename T>
+Status Stack<T>::pop()
+{
+	//退栈
+	if(Top == Base)
+		return ERROR;
+
+	Top--;
+	Current = Top - 1;
 	return OK;
 }
 
