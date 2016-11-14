@@ -47,11 +47,11 @@ WebPage::WebPage(const WebPage& page)
 	m_content = page.m_content;
 }
 
-void WebPage::extractInfo(string inputPath)
+void extractInfo(WebPage& page, string inputPath)
 {
 	ifstream fl(inputPath);
  	if(!fl.is_open())
-		exit(ERROR);
+		exit(page.ERROR);
 	wbuffer_convert<codecvt_utf8<wchar_t>> conv(fl.rdbuf());
 	wistream fin(&conv);
 	//m_fileName = inputPath;
@@ -60,7 +60,7 @@ void WebPage::extractInfo(string inputPath)
 	CharString tempElem;//临时存储进出栈元素
 	CharString cmpElem;//用于比较标签是否相同的字符串
 	ElemType ch1, ch2;
-	Stringbuff tagBuff;//标签缓冲区
+	Stringbuff tagBuff;//标签\缓冲区
 	Stringbuff contentBuff;//内容缓冲区
 	//tag是标志位，判断接下来读的那一行应该进行的操作
 	//如果是0的话表示当前应该储存的字符串为应该进栈的标签
@@ -69,7 +69,8 @@ void WebPage::extractInfo(string inputPath)
 	//-1，暂时不需要储存
 	int tag = -1;
 	bool startContent = false;//正文正式开始
-	while(!fin.eof())
+	Status StackStatus = Stack<CharString>::OK;
+	while(!fin.eof() && StackStatus != m_stack.ERROR)
 	{
 		fin.get(ch1);
 		if(ch1 == '\n')
@@ -87,51 +88,60 @@ void WebPage::extractInfo(string inputPath)
 			if(ch2 == '/')
 			{
 				tag = 1;
-				m_stack.top(tempElem);
+				StackStatus = m_stack.pop(tempElem);
 				tagBuff.clear();
-				fin.getline(tagBuff.data, tempElem.length + 2, '>');
+				fin.getline(tagBuff.data, tempElem.length + 10, '>');
 				cmpElem.assign(tagBuff.data);
-				if(match(tempElem, cmpElem) && cmpElem.length != 0)//标签相同，匹配
+				bool isMatch = false;
+				do
 				{
-					m_stack.pop();
-					tag = -1;
-					if(m_title.length == 0 && tempElem.indexOf(title, 0) != -1)
+					if(match(tempElem, cmpElem) && cmpElem.length != 0)//标签相同，匹配
 					{
-						m_title.assign(contentBuff.data);
-						contentBuff.clear();
-					}
-					else if(m_question.length == 0 && tempElem.indexOf(h2, 0) != -1 && tempElem.indexOf(question, 0) != -1)
-					{
-						m_question.assign(contentBuff.data);
-						contentBuff.clear();
-					}
-					else if(m_author.length == 0 && tempElem.indexOf(span, 0) != -1 && tempElem.indexOf(author, 0) != -1)
-					{
-						m_author.assign(contentBuff.data);
-						if(m_author.length >= 2)
+						isMatch = true;
+						if(!startContent)
+							tag = -1;
+						if(page.m_title.length == 0 && tempElem.indexOf(page.title, 0) != -1)
 						{
-							if(m_author.data[m_author.length - 1] == L'，')
-							{
-								m_author.length--;
-								m_author.data[m_author.length] = '\0';
-							}
+							page.m_title.assign(contentBuff.data);
+							contentBuff.clear();
 						}
-						contentBuff.clear();
+						else if(page.m_question.length == 0 && tempElem.indexOf(page.h2, 0) != -1 && tempElem.indexOf(page.question, 0) != -1)
+						{
+							page.m_question.assign(contentBuff.data);
+							contentBuff.clear();
+						}
+						else if(page.m_author.length == 0 && tempElem.indexOf(page.span, 0) != -1 && tempElem.indexOf(page.author, 0) != -1)
+						{
+							page.m_author.assign(contentBuff.data);
+							if(page.m_author.length >= 2)
+							{
+								if(page.m_author.data[page.m_author.length - 1] == L'，')
+								{
+									page.m_author.length--;
+									page.m_author.data[page.m_author.length] = '\0';
+								}
+							}
+							contentBuff.clear();
+						}
+						else if(tempElem.indexOf(page.div, 0) != -1 && tempElem.indexOf(page.content, 0) != -1)
+						{
+							if(page.m_content.length == 0)
+								page.m_content.assign(contentBuff.data);
+							else if(page.m_content.length < 100)
+								page.m_content.concat(contentBuff.data);
+							contentBuff.clear();
+						}
+						else if(match(tempElem, page.p) || match(tempElem, page.li))
+						{
+							contentBuff.append('\n');
+						}
+						//其他标签不用管，直接ignore就好
 					}
-					else if(m_content.length == 0 && tempElem.indexOf(div, 0) != -1 && tempElem.indexOf(content, 0) != -1)
+					else
 					{
-						m_content.assign(contentBuff.data);
-						contentBuff.clear();
-						break;//如果内容也存完了，就不再遍历，直接退出
+						StackStatus = m_stack.pop(tempElem);
 					}
-					else if(match(tempElem, p) || match(tempElem, li))
-					{
-						contentBuff.append('\n');
-					}
-					//其他标签不用管，直接ignore就好
-				}
-				else
-					continue;//如果不匹配也不用管（？）TODO
+				}while(!isMatch && !fin.eof() && StackStatus != m_stack.ERROR && StackStatus != m_stack.M_OVERFLOW);
 			}
 			else
 			{
@@ -147,7 +157,7 @@ void WebPage::extractInfo(string inputPath)
 				//进栈操作，如果是结束标或者自闭合标签的话就不用管了
 				tempElem.assign(tagBuff.data);
 				tagBuff.clear();
-				if(match(tempElem, img) || match(tempElem, meta) || match(tempElem, link) || match(tempElem, base))
+				if(match(tempElem, page.img) || match(tempElem, page.meta) || match(tempElem, page.link) || match(tempElem, page.base))
 				{
 					tag = -1;
 					continue;
@@ -161,9 +171,9 @@ void WebPage::extractInfo(string inputPath)
 					}
 				}
 				m_stack.push(tempElem);
-				if(tempElem.indexOf(extraInfo, 0) == -1)
+				if(tempElem.indexOf(page.extraInfo, 0) == -1)
 				{
-					if(!startContent && tempElem.indexOf(content, 0) != -1)
+					if(!startContent && tempElem.indexOf(page.content, 0) != -1)
 						startContent = true;
 					if(!startContent)
 						contentBuff.clear();
@@ -192,17 +202,17 @@ void WebPage::extractInfo(string inputPath)
 
 }
 
-void WebPage::printInfo(string outputPath)
+void printInfo(WebPage& page, string outputPath)
 {
 	//参考了http://blog.csdn.net/xujiezhige/article/details/17843831上的内容，对输出进行设置
 	std::locale oNewLocale(std::locale(), "", std::locale::ctype);
 	std::locale oPreviousLocale = std::locale::global(oNewLocale);
 
 	wofstream fout(outputPath, ios::out);
-	fout << m_title.data << endl;
-	fout << m_question.data << endl;
-	fout << m_author.data << endl;
-	fout << m_content.data << endl;
+	fout << page.m_title.data << endl;
+	fout << page.m_question.data << endl;
+	fout << page.m_author.data << endl;
+	fout << page.m_content.data << endl;
 	fout.close();
 
 	std::locale::global(oPreviousLocale);

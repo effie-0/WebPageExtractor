@@ -114,7 +114,7 @@ int CharString::indexOf(const CharString& subStr, int pos)
 
 	int i = pos;
 	int j = 0;
-	while(i < this->length && j < subStr.length)
+	while(i < this->length && j < subStr.length && data[i] != '\0')
 	{
 		if(j == -1 || data[i] == subStr.data[j])
 		{
@@ -124,7 +124,7 @@ int CharString::indexOf(const CharString& subStr, int pos)
 		}
 		else
 		{
-			j = next[j];//模式串移动，i不变
+			j = subStr.next[j];//模式串移动，i不变
 		}
 	}
 
@@ -184,6 +184,7 @@ CharString CharString::concat(const CharString& otherStr)
 	}
 	longStr.data[i] = '\0';
 	longStr.getNext();
+	(*this) = longStr;
 	return longStr;
 }
 
@@ -230,7 +231,7 @@ void CharString::assign(const ElemType *str)
 	length = 0;
 	if(str != nullptr)
 	{
-		while(str[i] != '\0')
+		while(str[i] != '\0' && str[i] != L'\0')
 		{
 			length++;
 			i++;

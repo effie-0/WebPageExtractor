@@ -60,4 +60,5 @@ public:
 	bool equalsTo(const CharString& otherStr);
 };
 
+extern bool operator<(const CharString& str1, const CharString& str2);
 #endif

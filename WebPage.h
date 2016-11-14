@@ -5,9 +5,10 @@
 //////////////////////////////////////////////
 //该部分进行了网页的解析操作
 //实现了网页WebPage这个对象
-//主要功能有：
+//主要功能（接口）有：
 //1、由文件名称获取读取该文件
-//2、使用栈结构遍历信息，获取相应应输出的内容
+//2、使用栈结构遍历信息，获取相应关键信息
+//3、输出关键信息到文件
 /////////////////////////////////////////////
 
 #ifndef WEBPAGE_H
@@ -52,13 +53,12 @@ public:
 	~WebPage(){}
 	//拷贝构造函数
 	WebPage(const WebPage& page);
-
-	//解析网址，获取关键信息（todo:中文分词）
-	void extractInfo(string inputPath);
-	//输出信息到*.info文件中
-	void printInfo(string outputPath);
 };
 
 extern bool match(CharString& mainStr, const CharString& otherStr);
+//解析网址，获取关键信息（todo:中文分词）
+extern void extractInfo(WebPage& page, string inputPath);
+//输出信息到*.info文件中
+extern void printInfo(WebPage& page, string outputPath);
 
 #endif
