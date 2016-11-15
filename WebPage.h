@@ -43,7 +43,7 @@ public:
 
 public:
 	static const int ERROR = 0;
-	//CharString m_fileName;//网页文件名称
+	string m_fileName;//网页文件名
 	CharString m_title;//标题
 	CharString m_question;//问题
 	CharString m_author;//作者

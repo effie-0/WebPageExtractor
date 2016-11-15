@@ -156,7 +156,7 @@ CharString CharString::substring(int off, int count)
 			j = off + i;
 			subStr.data[i] = data[j];
 		}
-		subStr.data[length] = '\0';
+		subStr.data[subStr.length] = '\0';
 		subStr.getNext();
 	}
 
@@ -406,6 +406,58 @@ bool CharString::operator<(const CharString& str)
 		result = false;
 	}
 	else if(length == 0)
+	{
+		result = true;
+	}
+
+	return result;
+}
+
+bool CharString::trim()
+{
+	if(length <= 1)
+		return false;
+
+	data[length - 1] = '\0';
+	length--;
+	next[length] = -2;//ʧЧ
+	return true;
+}
+
+bool operator<(const CharString& str1, const CharString& str2)
+{
+	bool result;
+	if(str1.length != 0 && str2.length != 0)
+	{
+		int i;
+		int min_length = (str1.length > str2.length) ? str2.length : str1.length;
+		for(i = 0; i < min_length; i++)
+		{
+			if(str1.data[i] < str2.data[i])
+			{
+				result = true;
+				break;
+			}
+			else if(str1.data[i] > str2.data[i])
+			{
+				result = false;
+				break;
+			}
+		}
+
+		if(i >= min_length)
+		{
+			if(str1.length < str2.length)
+				result = true;
+			else if(str1.length >= str2.length)
+				result = false;
+		}
+	}
+	else if(str2.length == 0)
+	{
+		result = false;
+	}
+	else if(str1.length == 0)
 	{
 		result = true;
 	}

@@ -6,7 +6,9 @@
 //实现了字符串链表CharStringLink的数据结构
 
 #include "CharStringLink.h"
-#include <iostream>
+#include <fstream>
+#include <locale>
+#include <codecvt>
 
 CharStringLink::CharStringLink()
 {
@@ -19,22 +21,22 @@ CharStringLink::CharStringLink()
 
 CharStringLink::~CharStringLink()
 {
-	if(head)
-	{
-		while(head->next)
-		{
-			current = head->next;
-			head->next = current->next;
-			delete current;
-		}
+	//if(head)
+	//{
+	//	while(head->next)
+	//	{
+	//		current = head->next;
+	//		head->next = current->next;
+	//		delete current;
+	//	}
 
-		delete head;
-		head = nullptr;
-		tail = nullptr;
-		current = nullptr;
-		length = 0;
-		currentPos = 0;
-	}
+	//	//delete head;
+	//	head = nullptr;
+	//	tail = nullptr;
+	//	current = nullptr;
+	//	length = 0;
+	//	currentPos = 0;
+	//}
 }
 
 Status CharStringLink::add(const CharString& element, int pos)
@@ -177,3 +179,31 @@ int CharStringLink::search(CharString& element)
 	return result;
 }
 
+
+Status CharStringLink::append(const CharString& element)
+{
+	Status outcome;
+	if(this->length == 0)
+	{
+		outcome = this->add(element, 0);
+	}
+	else
+	{
+		outcome = this->add(element, length - 1);
+	}
+	return outcome;
+}
+
+void CharStringLink::printLink(string fileName)
+{
+	ofstream outFile(fileName);
+	wbuffer_convert<codecvt_utf8<wchar_t>> conv(outFile.rdbuf());
+	wostream fout(&conv);
+
+	int i;
+	for(i = 0; i <length; i++)
+	{
+		locatePos(i);
+		fout << current->data.data << endl;
+	}
+}

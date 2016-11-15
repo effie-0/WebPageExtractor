@@ -47,6 +47,8 @@ public:
 	void assign(const ElemType *str);
 	//重载赋值函数，参数类型是const CharString&
 	void assign(const CharString& str);
+	//去掉字符串最后的一个字符，如果字符串内容长度<=1，返回false
+	bool trim();
 	// = 运算符重载
 	CharString& operator = (const CharString& str);
 

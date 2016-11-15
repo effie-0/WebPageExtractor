@@ -49,6 +49,7 @@ WebPage::WebPage(const WebPage& page)
 
 void extractInfo(WebPage& page, string inputPath)
 {
+	//参考了群主@孙子平 的三行输入输出代码
 	ifstream fl(inputPath);
  	if(!fl.is_open())
 		exit(page.ERROR);
@@ -204,18 +205,14 @@ void extractInfo(WebPage& page, string inputPath)
 
 void printInfo(WebPage& page, string outputPath)
 {
-	//参考了http://blog.csdn.net/xujiezhige/article/details/17843831上的内容，对输出进行设置
-	std::locale oNewLocale(std::locale(), "", std::locale::ctype);
-	std::locale oPreviousLocale = std::locale::global(oNewLocale);
-
-	wofstream fout(outputPath, ios::out);
+	//参考了群主@孙子平 的三行输入输出代码
+	ofstream outFile(outputPath);
+	wbuffer_convert<std::codecvt_utf8<wchar_t>> conv(outFile.rdbuf());
+	wostream fout(&conv);
 	fout << page.m_title.data << endl;
 	fout << page.m_question.data << endl;
 	fout << page.m_author.data << endl;
 	fout << page.m_content.data << endl;
-	fout.close();
-
-	std::locale::global(oPreviousLocale);
 }
 
 bool match(CharString& mainStr, const CharString& otherStr)
