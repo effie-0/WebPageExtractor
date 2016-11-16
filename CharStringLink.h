@@ -39,6 +39,8 @@ public:
 
 	//初始化，构造一条空链表
 	CharStringLink();
+	//拷贝构造函数
+	CharStringLink(const CharStringLink& otherLink);
 	~CharStringLink();
 
 	//函数结果状态
@@ -59,6 +61,9 @@ public:
 	int search(CharString& element);
 	//输出链表内容到文件
 	void printLink(string fileName);
+
+	//重载=运算符
+	CharStringLink& operator=(const CharStringLink& otherLink);
 };
 
 #endif

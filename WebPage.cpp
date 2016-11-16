@@ -129,7 +129,10 @@ void extractInfo(WebPage& page, string inputPath)
 							if(page.m_content.length == 0)
 								page.m_content.assign(contentBuff.data);
 							else if(page.m_content.length < 100)
+							{
 								page.m_content.concat(contentBuff.data);
+								break;
+							}
 							contentBuff.clear();
 						}
 						else if(match(tempElem, page.p) || match(tempElem, page.li))
@@ -209,10 +212,26 @@ void printInfo(WebPage& page, string outputPath)
 	ofstream outFile(outputPath);
 	wbuffer_convert<std::codecvt_utf8<wchar_t>> conv(outFile.rdbuf());
 	wostream fout(&conv);
-	fout << page.m_title.data << endl;
-	fout << page.m_question.data << endl;
-	fout << page.m_author.data << endl;
-	fout << page.m_content.data << endl;
+	if(page.m_title.data != nullptr)
+		fout << page.m_title.data << endl;
+	else
+		fout << endl;
+
+	if(page.m_question.data != nullptr)
+		fout << page.m_question.data << endl;
+	else
+		fout << endl;
+
+	if(page.m_author.data != nullptr)
+		fout << page.m_author.data << endl;
+	else
+		fout << endl;
+
+	if(page.m_content.data != nullptr)
+		fout << page.m_content.data << endl;
+	else
+		fout << endl;
+	outFile.close();
 }
 
 bool match(CharString& mainStr, const CharString& otherStr)

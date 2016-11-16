@@ -6,9 +6,11 @@
 //该部分实现了字符串的数据结构
 //实现的基本操作为：
 //1.indexOf			查找子串的位置
-//2.substring		截取字符串
+//2.substring			截取字符串
 //3.concat			连接字符串
 //4.assign			赋值
+//5.trim				去掉字符串的最后一个字符
+//6.=, <, >, ==		运算符重载
 //////////////////////////////////
 
 #ifndef CHARSTRING_H
@@ -40,9 +42,9 @@ public:
 	//substring截取字符串，返回的是从off开始长度为count的子串，默认off跟count都是0
 	CharString substring(int off = 0, int count = 0);
 	//连接字符串，参数是需要接到后面的字符串，返回值就是连接后的字符串（原有字符串不改变）
-	CharString concat(const CharString& otherStr);
+	CharString& concat(const CharString& otherStr);
 	//连接字符串，参数是ElemType*，返回值就是连接之后的字符串（原有字符串改变为增加长度的字符串）
-	CharString concat(const ElemType* str);
+	CharString& concat(const ElemType* str);
 	//赋值，参数类型为ElemType*
 	void assign(const ElemType *str);
 	//重载赋值函数，参数类型是const CharString&
@@ -52,12 +54,6 @@ public:
 	// = 运算符重载
 	CharString& operator = (const CharString& str);
 
-	// == 运算符重载
-	bool operator == (const CharString& str);
-	// > 运算符重载
-	bool operator>(const CharString& str);
-	// < 运算符重载
-	bool operator<(const CharString& str);
 	//判断两个字符串是否相等
 	bool equalsTo(const CharString& otherStr);
 };

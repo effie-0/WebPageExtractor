@@ -21,22 +21,23 @@ CharStringLink::CharStringLink()
 
 CharStringLink::~CharStringLink()
 {
-	//if(head)
-	//{
-	//	while(head->next)
-	//	{
-	//		current = head->next;
-	//		head->next = current->next;
-	//		delete current;
-	//	}
+	if(head)
+	{
+		while(head->next)
+		{
+			current = head->next;
+			head->next = current->next;
+			current->next = nullptr;
+			delete current;
+		}
 
-	//	//delete head;
-	//	head = nullptr;
-	//	tail = nullptr;
-	//	current = nullptr;
-	//	length = 0;
-	//	currentPos = 0;
-	//}
+		delete head;
+		head = nullptr;
+		tail = nullptr;
+		current = nullptr;
+		length = 0;
+		currentPos = 0;
+	}
 }
 
 Status CharStringLink::add(const CharString& element, int pos)
@@ -204,6 +205,55 @@ void CharStringLink::printLink(string fileName)
 	for(i = 0; i <length; i++)
 	{
 		locatePos(i);
-		fout << current->data.data << endl;
+		if(current->data.data != nullptr)
+			fout << current->data.data << endl;
 	}
+	outFile.close();
+}
+
+CharStringLink::CharStringLink(const CharStringLink& otherLink)
+{
+	//¿½±´¹¹Ôìº¯Êý
+	head = nullptr;
+	tail = head;
+	current = head;
+	currentPos = 0;
+	length = 0;
+
+	CharStringList p = otherLink.head;
+	while(p != nullptr)
+	{
+		this->append(p->data);
+		p = p->next;
+	};
+}
+
+CharStringLink& CharStringLink::operator=(const CharStringLink& otherLink)
+{
+	if(head)
+	{
+		while(head->next)
+		{
+			current = head->next;
+			head->next = current->next;
+			current->next = nullptr;
+			delete current;
+		}
+
+		delete head;
+		head = nullptr;
+		tail = nullptr;
+		current = nullptr;
+		length = 0;
+		currentPos = 0;
+	}
+
+	CharStringList p = otherLink.head;
+	while(p != nullptr)
+	{
+		this->append(p->data);
+		p = p->next;
+	};
+
+	return *this;
 }

@@ -25,6 +25,8 @@ public:
 	int current;//当前指针
 
 	Stringbuff();
+	//拷贝构造函数
+	Stringbuff(const Stringbuff& otherBuff);
 	~Stringbuff();
 
 	//向该缓冲区增添新字符
@@ -33,6 +35,9 @@ public:
 	void enlarge();
 	//清空缓冲区，注意容量不能改变
 	void clear();
+
+	//重载=运算符
+	Stringbuff& operator=(const Stringbuff& otherBuff);
 };
 
 #endif

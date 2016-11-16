@@ -25,7 +25,7 @@ bool initDictionary(Dictionary& m_dic, string fileName)
 	}
 
 	wchar_t temp[MAX_WORD_SIZE];
-	CharString m_string;
+	CharString m_string(L"a");
 	m_dic.maxLength = 0;
 	while(!fin.eof())
 	{
@@ -33,7 +33,7 @@ bool initDictionary(Dictionary& m_dic, string fileName)
 		m_string.assign(temp);
 		if(m_string.length > m_dic.maxLength)
 			m_dic.maxLength = m_string.length;
-		m_dic.stringMap[m_string] = 1;
+		m_dic.stringMap[m_string] = -1;
 	}
 	return true;
 }

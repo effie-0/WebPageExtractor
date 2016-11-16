@@ -26,6 +26,8 @@ class Dictionary
 public:
 	map<CharString, int> stringMap;
 	int maxLength;//字典里最长的字符串的长度
+
+	//Dictionary(){maxLength = 0;}
 };
 
 //初始化字典，成功返回true，不成功返回false

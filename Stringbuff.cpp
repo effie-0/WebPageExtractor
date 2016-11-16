@@ -25,6 +25,18 @@ Stringbuff::~Stringbuff()
 	capacity = 0;
 }
 
+Stringbuff::Stringbuff(const Stringbuff& otherBuff)
+{
+	data = (ElemType *)malloc(otherBuff.capacity * sizeof(ElemType));
+	capacity = otherBuff.capacity;
+	current = 0;
+	while(otherBuff.data[current] != '\0' && otherBuff.data[current] != L'\0')
+	{
+		data[current] = otherBuff.data[current];
+	};
+	data[current] = '\0';
+}
+
 void Stringbuff::append(ElemType element)
 {
 	data[current] = element;
@@ -48,4 +60,21 @@ void Stringbuff::clear()
 		data[i] = '\0';
 	}
 	current = 0;
+}
+
+Stringbuff& Stringbuff::operator=(const Stringbuff& otherBuff)
+{
+	if(data)
+		free(data);
+
+	capacity = otherBuff.capacity;
+	data = (ElemType *)malloc(otherBuff.capacity * sizeof(ElemType));
+	current = 0;
+	while(otherBuff.data[current] != '\0' && otherBuff.data[current] != L'\0')
+	{
+		data[current] = otherBuff.data[current];
+	};
+	data[current] = '\0';
+
+	return *this;
 }

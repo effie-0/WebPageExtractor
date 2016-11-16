@@ -30,6 +30,8 @@ public:
 	Stack(int length);
 	//重载，默认长度为0
 	Stack();
+	//拷贝构造函数
+	Stack(const Stack& otherStack);
 	~Stack();
 
 	//函数结果状态
@@ -48,6 +50,9 @@ public:
 	Status top(T& data);
 	//判断栈是否为空
 	bool empty();
+
+	//重载=运算符
+	Stack& operator=(const Stack& otherStack);
 };
 
 #include <iostream>
@@ -74,12 +79,55 @@ Stack<T>::Stack()
 	Top = Base;
 }
 
+template<typename T>
+Stack<T>::Stack(const Stack<T>& otherStack)
+{
+	Size = otherStack.Size;
+	Base = new T[Size];
+	if(!Base)
+		exit(M_OVERFLOW);
+	Top = Base;
+
+	T* p = otherStack.Base;
+	while(p != otherStack.Top)
+	{
+		this->push(*p);
+		p++;
+	};
+}
+
+template<typename T>
+Stack<T>& Stack<T>::operator=(const Stack<T>& otherStack)
+{
+	if(Base != nullptr)
+	{
+		Top = nullptr;
+		Current = nullptr;
+		Size = 0;
+		delete[] Base;
+	}
+
+	Size = otherStack.Size;
+	Base = new T[Size];
+	if(!Base)
+		exit(M_OVERFLOW);
+	Top = Base;
+
+	T* p = otherStack.Base;
+	while(p != otherStack.Top)
+	{
+		this->push(*p);
+		p++;
+	};
+}
+
 template <typename T>
 Stack<T>::~Stack()
 {
 	if(Base != nullptr)
 	{
 		Top = nullptr;
+		Current = nullptr;
 		Size = 0;
 		delete[] Base;
 	}
