@@ -18,7 +18,7 @@ using namespace std;
 
 int main(int argc, char* args[])
 {
-	system("dir /b .\\input >> directory.txt");
+	system("dir /b .\\input > directory.txt");
 	ifstream dir("directory.txt");
 	if(!dir.is_open())
 	{
@@ -40,6 +40,8 @@ int main(int argc, char* args[])
 	while(!dir.eof())
 	{
 		dir >> inputName;
+		if(inputName.size() <= 0 || inputName.empty())
+			break;
 		WebPage m_page;
 		string m_inPath = m_pagePath + inputName;
 		string m_outPath1 = m_outPath + inputName;
@@ -54,7 +56,9 @@ int main(int argc, char* args[])
 		m_outPath2 = m_outPath2.substr(0, length);
 		m_outPath2 += out2;
 		m_link.printLink(m_outPath2);
+
 	};
 	dir.close();
+	remove("directory.txt");
 	return 0;
 }

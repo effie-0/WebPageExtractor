@@ -71,7 +71,8 @@ void extractInfo(WebPage& page, string inputPath)
 	int tag = -1;
 	bool startContent = false;//正文正式开始
 	Status StackStatus = Stack<CharString>::OK;
-	while(!fin.eof() && StackStatus != m_stack.ERROR)
+	bool isEnd = false;
+	while(!fin.eof() && StackStatus != m_stack.ERROR && !isEnd)
 	{
 		fin.get(ch1);
 		if(ch1 == '\n')
@@ -131,7 +132,14 @@ void extractInfo(WebPage& page, string inputPath)
 							else if(page.m_content.length < 100)
 							{
 								page.m_content.concat(contentBuff.data);
-								break;
+								//contentBuff.clear();
+								//while(!m_stack.One())
+								//{
+								//	CharString elem;
+								//	StackStatus = m_stack.pop(elem);
+								//};
+								isEnd = true;
+								//break;
 							}
 							contentBuff.clear();
 						}
@@ -234,7 +242,7 @@ void printInfo(WebPage& page, string outputPath)
 	outFile.close();
 }
 
-bool match(CharString& mainStr, const CharString& otherStr)
+bool match(CharString mainStr, const CharString& otherStr)
 {
 	int num = mainStr.indexOf(otherStr, 0);
 	if(num != -1 && num <= otherStr.length + 3)

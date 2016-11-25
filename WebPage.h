@@ -55,7 +55,7 @@ public:
 	WebPage(const WebPage& page);
 };
 
-extern bool match(CharString& mainStr, const CharString& otherStr);
+extern bool match(CharString mainStr, const CharString& otherStr);
 //解析网址，获取关键信息（todo:中文分词）
 extern void extractInfo(WebPage& page, string inputPath);
 //输出信息到*.info文件中

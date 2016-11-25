@@ -27,10 +27,11 @@ CharString::CharString(const ElemType*str)
 		next = new int[length];//用于模式匹配的数据域长度总比 data少1，因为'\0'不会有对应的next 函数
 		if(!data || !next)
 			exit(M_OVERFLOW);
-		for(i = 0; i <= length; i++)
+		for(i = 0; i < length; i++)
 		{
 			data[i] = str[i];
 		}
+		data[length] = '\0';
 		getNext();
 	}
 }
@@ -53,12 +54,15 @@ CharString::CharString(const CharString& str)
 			if(i != length)
 				next[i] = str.next[i];
 		}
+		data[length] = '\0';
 	}
 }
 
 CharString::CharString()
 {
-	data = nullptr;
+	data = new ElemType[2];
+	data[0] = '\0';
+	data[1] = '\0';
 	next = nullptr;
 	length = 0;
 }
@@ -71,10 +75,13 @@ CharString::~CharString()
 		if(data)
 		{
 			if(data[0] != '\0' && data[0] != L'\0')
-			delete[] data;
+			{
+				//std::cout << data << std::endl;
+				delete[] data;
+			}
 		}
 		//if(next)
-		//	delete[] next;
+			//delete[] next;
 	}
 	length = 0;
 	data = nullptr;
@@ -180,16 +187,17 @@ CharString& CharString::concat(const CharString& otherStr)
 	if(!longStr.data || !longStr.next)
 		exit(M_OVERFLOW);
 
-	int i, j;
+	int i, j = 0;
 	for(i = 0; i < length; i++)
 	{
 		longStr.data[i] = data[i];
 	}
-	for(i = length, j = 0; i < longStr.length; i++, j++)
+	for(i = length; i < longStr.length; i++)
 	{
 		longStr.data[i] = otherStr.data[j];
+		j++;
 	}
-	longStr.data[i] = '\0';
+	longStr.data[longStr.length] = '\0';
 	longStr.getNext();
 	(*this) = longStr;
 	return *this;
@@ -208,6 +216,7 @@ CharString& CharString::concat(const ElemType* str)
 		addLength = i;
 
 		ElemType *newData = new ElemType[length + addLength + 1];
+		int *newNext = new int[length + addLength];
 		for(i = 0; i < length; i++)
 		{
 			newData[i] = data[i];
@@ -220,6 +229,7 @@ CharString& CharString::concat(const ElemType* str)
 		newData[length] = '\0';
 		delete[] data;
 		data = newData;
+		next = newNext;
 		getNext();
 	}
 
@@ -236,7 +246,7 @@ void CharString::assign(const ElemType *str)
 				delete[] data;
 		}
 		//if(next)
-		//	delete[] next;
+			//delete[] next;
 	}
 
 	int i = 0;
@@ -262,6 +272,7 @@ void CharString::assign(const ElemType *str)
 		{
 			data[i] = str[i];
 		}
+		data[length] = '\0';
 		getNext();
 	}
 }
@@ -292,6 +303,7 @@ void CharString::assign(const CharString& str)
 			if(i != length)
 				next[i] = str.next[i];
 		}
+		data[length] = '\0';
 	}
 }
 
@@ -305,7 +317,7 @@ CharString& CharString::operator=(const CharString &str)
 				delete[] data;
 		}
 		//if(next)
-		//	delete[] next;
+			//delete[] next;
 	}
 	length = str.length;
 	data = nullptr;
@@ -322,6 +334,7 @@ CharString& CharString::operator=(const CharString &str)
 				next[i] = str.next[i];
 		}
 	}
+	data[length] = '\0';
 	return *this;
 }
 

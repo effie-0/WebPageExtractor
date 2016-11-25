@@ -12,7 +12,11 @@ Stringbuff::Stringbuff()
 {
 	capacity = MAX_INIT_SIZE;
 	data = (ElemType *)malloc(MAX_INIT_SIZE * sizeof(ElemType));
-	data[0] = '\0';
+	int i;
+	for(i = 0; i < capacity; i++)
+	{
+		data[i] = '\0';
+	}
 	current = 0;
 }
 
@@ -42,7 +46,7 @@ void Stringbuff::append(ElemType element)
 	data[current] = element;
 	current++;
 	data[current] = '\0';
-	if(current >= capacity -1)
+	if(current >= capacity -2)
 		enlarge();
 }
 
@@ -50,6 +54,11 @@ void Stringbuff::enlarge()
 {
 	capacity += APPEND_SIZE;
 	data = (ElemType *)realloc(data, capacity * sizeof(ElemType));
+	int i;
+	for(i = current; i < capacity; i++)
+	{
+		data[i] = '\0';
+	}
 }
 
 void Stringbuff::clear()

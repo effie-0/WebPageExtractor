@@ -50,6 +50,8 @@ public:
 	Status top(T& data);
 	//判断栈是否为空
 	bool empty();
+	//判断栈是否还有一个元素
+	bool One();
 
 	//重载=运算符
 	Stack& operator=(const Stack& otherStack);
@@ -130,6 +132,7 @@ Stack<T>::~Stack()
 		Current = nullptr;
 		Size = 0;
 		delete[] Base;
+		Base = nullptr;
 	}
 }
 
@@ -155,6 +158,8 @@ Status Stack<T>::pop(T& data)
 
 	Top--;
 	data = (*Top);
+	//delete Top;
+	//Top = new T;
 	Current = Top - 1;
 	return OK;
 }
@@ -193,5 +198,12 @@ bool Stack<T>::empty()
 	else
 		return false;
 }
-
+template<typename T>
+bool Stack<T>::One()
+{
+	if(Current == Base)
+		return true;
+	else
+		return false;
+}
 #endif
