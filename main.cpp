@@ -60,5 +60,7 @@ int main(int argc, char* args[])
 	};
 	dir.close();
 	remove("directory.txt");
+
+	system("pause");
 	return 0;
 }

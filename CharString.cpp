@@ -24,7 +24,8 @@ CharString::CharString(const ElemType*str)
 	if(length != 0)
 	{
 		data = new ElemType[length + 1];//特别注意，每次对data分配的内存空间都是长度+1，用于存放'\0'
-		next = new int[length];//用于模式匹配的数据域长度总比 data少1，因为'\0'不会有对应的next 函数
+		next = new int[length + 1];//just for safety
+		next[length] = -2;
 		if(!data || !next)
 			exit(M_OVERFLOW);
 		for(i = 0; i < length; i++)
@@ -44,7 +45,8 @@ CharString::CharString(const CharString& str)
 	if(length > 0)
 	{
 		data = new ElemType[length + 1];
-		next = new int[length];
+		next = new int[length + 1];
+		next[length] = -2;
 		if(!data || !next)
 			exit(M_OVERFLOW);
 		int i;
@@ -60,10 +62,13 @@ CharString::CharString(const CharString& str)
 
 CharString::CharString()
 {
+	//below part is written just for safety reason
 	data = new ElemType[2];
 	data[0] = '\0';
 	data[1] = '\0';
-	next = nullptr;
+	next = new int[2];
+	next[0] = -1;
+	next[1] = -2;
 	length = 0;
 }
 
@@ -90,6 +95,9 @@ CharString::~CharString()
 
 void CharString::getNext()
 {
+	if(next == nullptr)
+		return;
+
 	int j = 0;
 	next[0] = -1;
 	int k = -1;
@@ -161,7 +169,8 @@ CharString CharString::substring(int off, int count)
 		//如果所求数据的长度超过主串长度，并且起始位置合法，就进行相应截断
 		subStr.length = (count <= (length - off)) ? count : (length - off);
 		subStr.data = new ElemType[subStr.length + 1];
-		subStr.next = new int[subStr.length];
+		subStr.next = new int[subStr.length + 1];
+		subStr.next[subStr.length] = -2;
 		if(!subStr.data || !subStr.next)
 			exit(M_OVERFLOW);
 		int i, j;
@@ -182,7 +191,8 @@ CharString& CharString::concat(const CharString& otherStr)
 	CharString longStr;//新建的返回字符串
 	longStr.length = length + otherStr.length;
 	longStr.data = new ElemType[longStr.length + 1];
-	longStr.next = new int[longStr.length];
+	longStr.next = new int[longStr.length + 1];
+	longStr.next[length] = -2;
 
 	if(!longStr.data || !longStr.next)
 		exit(M_OVERFLOW);
@@ -216,7 +226,7 @@ CharString& CharString::concat(const ElemType* str)
 		addLength = i;
 
 		ElemType *newData = new ElemType[length + addLength + 1];
-		int *newNext = new int[length + addLength];
+		int *newNext = new int[length + addLength + 1];
 		for(i = 0; i < length; i++)
 		{
 			newData[i] = data[i];
@@ -252,6 +262,7 @@ void CharString::assign(const ElemType *str)
 	int i = 0;
 	length = 0;
 	data = nullptr;
+	next = nullptr;
 	if(str != nullptr)
 	{
 		while(str[i] != '\0' && str[i] != L'\0')
@@ -264,7 +275,8 @@ void CharString::assign(const ElemType *str)
 	if(length > 0)
 	{
 		data = new ElemType[length + 1];//每次对data分配的内存空间都是长度+1，用于存放'\0'
-		next = new int[length];
+		next = new int[length + 1];
+		next[length] = -2;
 		if(!data || !next)
 			exit(M_OVERFLOW);
 
@@ -288,11 +300,13 @@ void CharString::assign(const CharString& str)
 	}
 	length = str.length;
 	data = nullptr;
+	next = nullptr;
 
 	if(length > 0)
 	{
 		data = new ElemType[length + 1];
-		next = new int[length];
+		next = new int[length + 1];
+		next[length] = -2;
 		if(!data || !next)
 			exit(M_OVERFLOW);
 
@@ -325,7 +339,8 @@ CharString& CharString::operator=(const CharString &str)
 	if(length > 0)
 	{
 		data = new ElemType[length + 1];
-		next = new int[length];
+		next = new int[length + 1];
+		next[length] = -2;
 		int i;
 		for(i = 0; i <= length; i++)
 		{
