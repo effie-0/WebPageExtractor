@@ -10,7 +10,8 @@
 //3.concat			连接字符串
 //4.assign			赋值
 //5.trim				去掉字符串的最后一个字符
-//6.=, <, >, ==		运算符重载
+//6.=, ==			运算符重载
+//7.equalsTo			判断两个字符串是否相同
 //////////////////////////////////
 
 #ifndef CHARSTRING_H
@@ -56,6 +57,8 @@ public:
 
 	//判断两个字符串是否相等
 	bool equalsTo(const CharString& otherStr);
+	//==运算符重载
+	bool operator==(const CharString& otherStr);
 };
 
 extern bool operator<(const CharString& str1, const CharString& str2);

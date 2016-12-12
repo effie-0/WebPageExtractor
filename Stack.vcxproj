@@ -66,12 +66,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AVLTree.h" />
     <ClInclude Include="CharString.h" />
     <ClInclude Include="CharStringLink.h" />
     <ClInclude Include="Dictionary.h" />
+    <ClInclude Include="Link.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="Stringbuff.h" />
     <ClInclude Include="WebPage.h" />
+    <ClInclude Include="WordNode.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CharString.cpp" />

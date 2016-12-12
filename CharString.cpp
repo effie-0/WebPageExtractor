@@ -425,3 +425,24 @@ bool operator<(const CharString& str1, const CharString& str2)
 
 	return result;
 }
+
+bool CharString::operator==(const CharString & otherStr)
+{
+	bool result = true;
+	if(otherStr.length != length)
+		result = false;
+	else
+	{
+		int i;
+		for(i = 0; i < length; i++)
+		{
+			if(data[i] != otherStr.data[i])
+			{
+				result = false;
+				break;
+			}
+		}
+	}
+
+	return result;
+}

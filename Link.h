@@ -1,25 +1,61 @@
-//
-//CharStringLink.cpp
+//////////////////////////////////////////////
+//Link.h
 //
 //author:杨璧菲2015013217
-//
-//实现了字符串链表CharStringLink的数据结构
+//////////////////////////////////////////////
+//该部分实现了链表模板类
+//todo: adjust the order
+/////////////////////////////////////////////
 
-#include "CharStringLink.h"
-#include <fstream>
-#include <locale>
-#include <codecvt>
-
-CharStringLink::CharStringLink()
+#ifndef LINK_H
+#define LINK_H
+ 
+template<typename T>
+class Node
 {
-	head = nullptr;
-	tail = head;
-	current = head;
-	currentPos = 0;
-	length = 0;
-}
+public:
+	T data;
+	Node<T>* next;
+	Node() : next(nullptr) {}
+};
 
-CharStringLink::~CharStringLink()
+template<typename T>
+class Link
+{
+private:
+	bool locatePos(int pos);
+
+public:
+	Node<T>* head;//头指针
+	Node<T>* current;//当前指针
+	Node<T>* tail;//尾指针
+
+public:
+	int currentPos;//当前指针对应的位置
+	int length;//长度
+
+	Link() : head(nullptr), current(nullptr), tail(nullptr), currentPos(0), length(0) {}
+	Link(const Link<T> & otherLink);
+	~Link();
+
+	//在pos位置之前添加元素，新的元素成为第pos个元素，从0开始编号
+	bool add(const T& element, int pos);
+	//在尾节点之后添加新元素，使新元素成为尾节点
+	bool append(const T& element);
+	//删除第pos个元素，并返回其值，链表的长度减一
+	//第一个参数是位置，第二个参数是返回的元素内容
+	bool remove(int pos, T& element);
+	//查找某元素位置，如果没有找到，返回-1
+	int search(const T& element);
+
+	void printLink();
+
+	//重载=运算符
+	Link& operator=(const Link<T>& otherLink);
+};
+
+template<typename T>
+Link<T>::~Link()
 {
 	if(head)
 	{
@@ -40,20 +76,22 @@ CharStringLink::~CharStringLink()
 	}
 }
 
-Status CharStringLink::add(const CharString& element, int pos)
+template<typename T>
+bool Link<T>::add(const T& element, int pos)
 {
 	//在pos位置之前添加元素，新的元素成为第pos个元素，从0开始编号
-	Status outcome = OK;
+	if(pos < 0)
+		return false;
+
+	bool outcome = true;
 	if(pos != 0)
 	{
 		outcome = locatePos(pos - 1);
 	
-		if(outcome != ERROR && outcome != M_OVERFLOW && current != nullptr)
+		if(outcome && current != nullptr)
 		{
-			CharStringList p = new CharStringNode;
-			if(!p)
-				exit(M_OVERFLOW);
-			p->data.assign(element);
+			Node<T>* p = new Node<T>;
+			p->data = element;
 			p->next = current->next;
 			current->next = p;
 			if(tail == current)
@@ -66,10 +104,8 @@ Status CharStringLink::add(const CharString& element, int pos)
 	else
 	{
 		current = head;
-		head = new CharStringNode;
-		if(!head)
-			exit(M_OVERFLOW);
-		head->data.assign(element);
+		head = new Node<T>;
+		head->data = element;
 		head->next = current;
 		if(tail == nullptr)
 			tail = head;
@@ -81,16 +117,17 @@ Status CharStringLink::add(const CharString& element, int pos)
 	return outcome;
 }
 
-Status CharStringLink::locatePos(int pos)
+template<typename T>
+bool Link<T>::locatePos(int pos)
 {
 	//改变当前指针指向第pos个节点，pos == 0时指向头结点
-	Status result = OK;
+	bool result = true;
 	int i;
 
 	if(currentPos != pos && head != nullptr)
 	{
 		if(pos < 0 || pos >= length)
-			result = ERROR;
+			result = false;
 		else if(pos == 0)
 		{
 			current = head;
@@ -115,7 +152,7 @@ Status CharStringLink::locatePos(int pos)
 			}
 		}
 
-		if(result != ERROR)
+		if(result)
 			currentPos = pos;
 	}
 	else if(head == nullptr)
@@ -127,14 +164,15 @@ Status CharStringLink::locatePos(int pos)
 	return result;
 }
 
-Status CharStringLink::remove(int pos, CharString& element)
+template<typename T>
+bool Link<T>::remove(int pos, T& element)
 {
 	//删除第pos个元素，并返回其值，链表的长度减一，第一个参数是位置，第二个参数是返回的元素内容
 	if(pos < 0 || pos >= length)
-		return M_OVERFLOW;
+		return false;
 
-	Status result = OK;
-	CharStringList q;//用于返回的指针
+	bool result = true;
+	Node<T>* q;//用于返回的指针
 	if(pos != 0)
 	{
 		result = locatePos(pos - 1);
@@ -163,14 +201,15 @@ Status CharStringLink::remove(int pos, CharString& element)
 	return result;
 }
 
-int CharStringLink::search(CharString& element)
+template<typename T>
+int Link<T>::search(const T& element)
 {
-	CharStringList p = head;
+	Node<T>* p = head;
 	int result = -1;
 	int i;
 	for(i = 0; i < length; i++)
 	{
-		if(element.equalsTo(p->data))
+		if(element == p->data)
 		{
 			result = i;
 			break;
@@ -180,10 +219,10 @@ int CharStringLink::search(CharString& element)
 	return result;
 }
 
-
-Status CharStringLink::append(const CharString& element)
+template<typename T>
+bool Link<T>::append(const T& element)
 {
-	Status outcome;
+	bool outcome;
 	if(this->length == 0)
 	{
 		outcome = this->add(element, 0);
@@ -195,23 +234,8 @@ Status CharStringLink::append(const CharString& element)
 	return outcome;
 }
 
-void CharStringLink::printLink(string fileName)
-{
-	ofstream outFile(fileName);
-	wbuffer_convert<codecvt_utf8<wchar_t>> conv(outFile.rdbuf());
-	wostream fout(&conv);
-
-	int i;
-	for(i = 0; i <length; i++)
-	{
-		locatePos(i);
-		if(current->data.data != nullptr)
-			fout << current->data.data << endl;
-	}
-	outFile.close();
-}
-
-CharStringLink::CharStringLink(const CharStringLink& otherLink)
+template<typename T>
+Link<T>::Link(const Link<T>& otherLink)
 {
 	//拷贝构造函数
 	head = nullptr;
@@ -220,7 +244,7 @@ CharStringLink::CharStringLink(const CharStringLink& otherLink)
 	currentPos = 0;
 	length = 0;
 
-	CharStringList p = otherLink.head;
+	Node<T>* p = otherLink.head;
 	while(p != nullptr)
 	{
 		this->append(p->data);
@@ -228,7 +252,8 @@ CharStringLink::CharStringLink(const CharStringLink& otherLink)
 	};
 }
 
-CharStringLink& CharStringLink::operator=(const CharStringLink& otherLink)
+template<typename T>
+Link<T>& Link<T>::operator=(const Link<T>& otherLink)
 {
 	if(head)
 	{
@@ -248,7 +273,7 @@ CharStringLink& CharStringLink::operator=(const CharStringLink& otherLink)
 		currentPos = 0;
 	}
 
-	CharStringList p = otherLink.head;
+	Node<T>* p = otherLink.head;
 	while(p != nullptr)
 	{
 		this->append(p->data);
@@ -257,3 +282,16 @@ CharStringLink& CharStringLink::operator=(const CharStringLink& otherLink)
 
 	return *this;
 }
+
+template<typename T>
+void Link<T>::printLink()
+{
+	int i;
+	for(i = 0; i <length; i++)
+	{
+		locatePos(i);
+		if(current != nullptr)
+			std::cout << current->data << endl;
+	}
+}
+#endif
