@@ -9,6 +9,9 @@
 #include "Stack.h"
 #include "Stringbuff.h"
 #include "Dictionary.h"
+#include "AVLTree.h"
+#include "Query.h"
+#include "WordNode.h"
 #include <string>
 #include <fstream>
 #include <locale>
@@ -37,6 +40,8 @@ int main(int argc, char* args[])
 	string out1 = "info";
 	string out2 = "txt";
 
+	AVLTree<WordNode, CharString> tree;
+
 	while(!dir.eof())
 	{
 		dir >> inputName;
@@ -49,17 +54,19 @@ int main(int argc, char* args[])
 		m_outPath1 = m_outPath1.substr(0, length);
 		m_outPath1 += out1;
 		extractInfo(m_page, m_inPath);
-		printInfo(m_page, m_outPath1);
+		//printInfo(m_page, m_outPath1);
 
-		CharStringLink m_link(divideWords(m_dic, m_page));
-		string m_outPath2 = m_outPath + inputName;
-		m_outPath2 = m_outPath2.substr(0, length);
-		m_outPath2 += out2;
-		m_link.printLink(m_outPath2);
+		//CharStringLink m_link(divideWords(m_dic, m_page));
+		//string m_outPath2 = m_outPath + inputName;
+		//m_outPath2 = m_outPath2.substr(0, length);
+		//m_outPath2 += out2;
+		//m_link.printLink(m_outPath2);
 
+		divideWords(m_dic, m_page, tree);
 	};
 	dir.close();
-	remove("directory.txt");
+	query(tree, "query.txt", "result.txt");
+	//remove("directory.txt");
 
 	system("pause");
 	return 0;

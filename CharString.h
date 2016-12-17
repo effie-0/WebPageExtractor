@@ -58,7 +58,7 @@ public:
 	//判断两个字符串是否相等
 	bool equalsTo(const CharString& otherStr);
 	//==运算符重载
-	bool operator==(const CharString& otherStr);
+	bool operator==(const CharString& otherStr)const;
 };
 
 extern bool operator<(const CharString& str1, const CharString& str2);

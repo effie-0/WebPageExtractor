@@ -58,17 +58,18 @@ CharString::CharString(const CharString& str)
 		}
 		data[length] = '\0';
 	}
+	else
+	{
+		data = nullptr;
+		next = nullptr;
+	}
 }
 
 CharString::CharString()
 {
 	//below part is written just for safety reason
-	data = new ElemType[2];
-	data[0] = '\0';
-	data[1] = '\0';
-	next = new int[2];
-	next[0] = -1;
-	next[1] = -2;
+	data = nullptr;
+	next = nullptr;
 	length = 0;
 }
 
@@ -85,8 +86,8 @@ CharString::~CharString()
 				delete[] data;
 			}
 		}
-		//if(next)
-			//delete[] next;
+		if(next)
+			delete[] next;
 	}
 	length = 0;
 	data = nullptr;
@@ -95,7 +96,7 @@ CharString::~CharString()
 
 void CharString::getNext()
 {
-	if(next == nullptr)
+	if(next == nullptr || length == 0)
 		return;
 
 	int j = 0;
@@ -119,7 +120,7 @@ void CharString::getNext()
 		{
 			k = next[k];
 		}
-	}
+	};
 
 	for(j = 1; j < length; j++)//对失效函数进行修正
 	{
@@ -170,7 +171,7 @@ CharString CharString::substring(int off, int count)
 		subStr.length = (count <= (length - off)) ? count : (length - off);
 		subStr.data = new ElemType[subStr.length + 1];
 		subStr.next = new int[subStr.length + 1];
-		subStr.next[subStr.length] = -2;
+		//subStr.next[subStr.length] = -2;
 		if(!subStr.data || !subStr.next)
 			exit(M_OVERFLOW);
 		int i, j;
@@ -330,8 +331,8 @@ CharString& CharString::operator=(const CharString &str)
 			if(length > 1)
 				delete[] data;
 		}
-		//if(next)
-			//delete[] next;
+		if(next)
+			delete[] next;
 	}
 	length = str.length;
 	data = nullptr;
@@ -348,8 +349,13 @@ CharString& CharString::operator=(const CharString &str)
 			if(i != length)
 				next[i] = str.next[i];
 		}
+		data[length] = '\0';
 	}
-	data[length] = '\0';
+	else
+	{
+		data = nullptr;
+		next = nullptr;
+	}
 	return *this;
 }
 
@@ -426,7 +432,7 @@ bool operator<(const CharString& str1, const CharString& str2)
 	return result;
 }
 
-bool CharString::operator==(const CharString & otherStr)
+bool CharString::operator==(const CharString& otherStr) const
 {
 	bool result = true;
 	if(otherStr.length != length)

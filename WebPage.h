@@ -43,7 +43,7 @@ public:
 
 public:
 	static const int ERROR = 0;
-	string m_fileName;//网页文件名
+	int docID;//网页ID
 	CharString m_title;//标题
 	CharString m_question;//问题
 	CharString m_author;//作者
@@ -53,10 +53,12 @@ public:
 	~WebPage(){}
 	//拷贝构造函数
 	WebPage(const WebPage& page);
+
+	void getID(string inputPath);//从网页文件名获取ID
 };
 
 extern bool match(CharString mainStr, const CharString& otherStr);
-//解析网址，获取关键信息（todo:中文分词）
+//解析网址，获取关键信息
 extern void extractInfo(WebPage& page, string inputPath);
 //输出信息到*.info文件中
 extern void printInfo(WebPage& page, string outputPath);

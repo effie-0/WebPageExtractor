@@ -19,6 +19,8 @@
 #include "CharString.h"
 #include "CharStringLink.h"
 #include "WebPage.h"
+#include "AVLTree.h"
+#include "WordNode.h"
 using namespace std;
 
 class Dictionary
@@ -32,6 +34,9 @@ public:
 
 //初始化字典，成功返回true，不成功返回false
 extern bool initDictionary(Dictionary& m_dic, string fileName);
+//分词
 extern CharStringLink divideWords(Dictionary& m_dic, WebPage& m_page);
+//重载分词函数，创建平衡二叉树
+extern void divideWords(Dictionary& m_dic, WebPage& m_page, AVLTree<WordNode, CharString> &tree);
 
 #endif

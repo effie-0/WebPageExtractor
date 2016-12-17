@@ -22,9 +22,6 @@ public:
 template<typename T>
 class Link
 {
-private:
-	bool locatePos(int pos);
-
 public:
 	Node<T>* head;//头指针
 	Node<T>* current;//当前指针
@@ -38,6 +35,8 @@ public:
 	Link(const Link<T> & otherLink);
 	~Link();
 
+	//定位current指针
+	bool locatePos(int pos);
 	//在pos位置之前添加元素，新的元素成为第pos个元素，从0开始编号
 	bool add(const T& element, int pos);
 	//在尾节点之后添加新元素，使新元素成为尾节点
@@ -45,10 +44,14 @@ public:
 	//删除第pos个元素，并返回其值，链表的长度减一
 	//第一个参数是位置，第二个参数是返回的元素内容
 	bool remove(int pos, T& element);
+	//修改位置为pos的节点的内容为element
+	bool edit(int pos, const T& element);
 	//查找某元素位置，如果没有找到，返回-1
 	int search(const T& element);
+	//判断链表是否为空
+	bool empty();
 
-	void printLink();
+	//void printLink();//just a test
 
 	//重载=运算符
 	Link& operator=(const Link<T>& otherLink);
@@ -202,6 +205,18 @@ bool Link<T>::remove(int pos, T& element)
 }
 
 template<typename T>
+bool Link<T>::edit(int pos, const T& element)
+{
+	if(pos < 0 || pos >= length)
+		return false;
+
+	bool result = locatePos(pos);
+	if(result)
+		current->data = element;
+	return result;
+}
+
+template<typename T>
 int Link<T>::search(const T& element)
 {
 	Node<T>* p = head;
@@ -209,7 +224,7 @@ int Link<T>::search(const T& element)
 	int i;
 	for(i = 0; i < length; i++)
 	{
-		if(element == p->data)
+		if(p->data == element)
 		{
 			result = i;
 			break;
@@ -283,15 +298,25 @@ Link<T>& Link<T>::operator=(const Link<T>& otherLink)
 	return *this;
 }
 
+//template<typename T>
+//void Link<T>::printLink()
+//{
+//	int i;
+//	for(i = 0; i <length; i++)
+//	{
+//		locatePos(i);
+//		if(current != nullptr)
+//			std::cout << current->data << endl;
+//	}
+//}
+
 template<typename T>
-void Link<T>::printLink()
+bool Link<T>::empty()
 {
-	int i;
-	for(i = 0; i <length; i++)
-	{
-		locatePos(i);
-		if(current != nullptr)
-			std::cout << current->data << endl;
-	}
+	if(length == 0)
+		return true;
+	else
+		return false;
 }
+
 #endif

@@ -36,15 +36,17 @@ WebPage::WebPage()
 		base.assign(L"base");
 		//lt.assign("<");
 		//rt.assign(">");
+
+		docID = 0;
 }
 
 WebPage::WebPage(const WebPage& page)
 {
-	//fileName = page.fileName;
 	m_title = page.m_title;
 	m_question = page.m_question;
 	m_author = page.m_author;
 	m_content = page.m_content;
+	docID = page.docID;
 }
 
 void extractInfo(WebPage& page, string inputPath)
@@ -55,7 +57,7 @@ void extractInfo(WebPage& page, string inputPath)
 		exit(page.ERROR);
 	wbuffer_convert<codecvt_utf8<wchar_t>> conv(fl.rdbuf());
 	wistream fin(&conv);
-	//m_fileName = inputPath;
+	page.getID(inputPath);
 
 	Stack<CharString> m_stack(MAX_STACK_SIZE);
 	CharString tempElem;//临时存储进出栈元素
@@ -249,4 +251,16 @@ bool match(CharString mainStr, const CharString& otherStr)
 		return true;
 	else
 		return false;
+}
+
+void WebPage::getID(string inputPath)
+{
+	const char* str = inputPath.data();
+	int i;
+	docID = 0;
+	int length = inputPath.length();
+	for(i = 8; i < length - 5; i++)
+	{
+		docID = docID * 10 + str[i] - '0';
+	}
 }

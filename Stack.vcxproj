@@ -71,6 +71,7 @@
     <ClInclude Include="CharStringLink.h" />
     <ClInclude Include="Dictionary.h" />
     <ClInclude Include="Link.h" />
+    <ClInclude Include="Query.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="Stringbuff.h" />
     <ClInclude Include="WebPage.h" />
@@ -81,8 +82,10 @@
     <ClCompile Include="CharStringLink.cpp" />
     <ClCompile Include="Dictionary.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Query.cpp" />
     <ClCompile Include="Stringbuff.cpp" />
     <ClCompile Include="WebPage.cpp" />
+    <ClCompile Include="WordNode.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

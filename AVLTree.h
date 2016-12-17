@@ -50,12 +50,19 @@ private:
 	void L_Rotate(BiNode<T, keyType>* &tree);
 	static enum LROri{Left, Right};//新添加的节点在左子树上或右子树上
 
+	AVLTree(const AVLTree<T, keyType>& other) : size(0), root(nullptr) {std::cout << "copy forbidden" << std:: endl;}
+	AVLTree<T, keyType>& operator=(const AVLTree<T, keyType>& other) 
+	{ size = 0; root = nullptr; std::cout << "copy forbidden" << std:: endl;}
+
 public:
 	int size;//节点数目
 	BiNode<T, keyType>* root;//根节点
+
+public:
 	AVLTree() : size(0), root(nullptr) {}
 	~AVLTree() { if(size > 0) DestroyTree(root);  size = 0;}
 
+public:
 	//插入新的节点，倒数第二个变量是用于判断树长高与否的变量
 	bool insert(const T & content, const keyType & key, bool& taller, BiNode<T, keyType>* &tree);
 	bool insert(const T & content, const keyType & key);//封装，便于调用
@@ -148,6 +155,7 @@ bool AVLTree<T, keyType>::insert(const T & content, const keyType & key, bool & 
 			}
 		}
 	}
+	return true;
 }
 
 template <typename T, typename keyType>

@@ -80,3 +80,63 @@ CharStringLink divideWords(Dictionary& m_dic, WebPage& m_page)
 
 	return outputLink;
 }
+
+void divideWords(Dictionary& m_dic, WebPage& m_page, AVLTree<WordNode, CharString>& tree)
+{
+	int current = 0;//在m_page的content里面用于不断向后移动的光标
+	int length = m_dic.maxLength;
+	CharString tempStr;//临时储存变量的字符串
+	map<CharString, int>::iterator iter;
+	bool result = true;//判断当前字符串长度是否>1
+	while(current < m_page.m_content.length)
+	{
+		tempStr = m_page.m_content.substring(current, length);
+		iter = m_dic.stringMap.find(tempStr);
+		if(iter != m_dic.stringMap.end())
+		{
+			//字符串在字典中
+			BiNode<WordNode, CharString> *address = nullptr;
+			if(!tree.search(tempStr, address))
+			{
+				WordNode node(tempStr);
+				node.addArtical(m_page.docID);
+				tree.insert(node, tempStr);
+			}
+			else
+			{
+				address->data.addArtical(m_page.docID);
+			}
+			current += length;
+			length = m_dic.maxLength;
+		}
+		else
+		{
+			length--;
+			result = tempStr.trim();
+			if(!result)
+			{
+				if(tempStr.data[0] >= 0x4E00 && tempStr.data[0] <= 0x9FBB)
+				{
+					BiNode<WordNode, CharString> *address = nullptr;
+					if(!tree.search(tempStr, address))
+					{
+						WordNode node(tempStr);
+						node.addArtical(m_page.docID);
+						tree.insert(node, tempStr);
+					}
+					else
+					{
+						address->data.addArtical(m_page.docID);
+					}
+					current += 1;
+					length = m_dic.maxLength;
+				}
+				else
+				{
+					current += 1;
+					length = m_dic.maxLength;
+				}
+			}
+		}
+	};
+}
